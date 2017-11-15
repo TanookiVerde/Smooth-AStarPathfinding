@@ -39,11 +39,12 @@ def Interpolate(t,degree,points,knots,weights):
 
     return result
 
-p = [[-1.0,  0.0],[-0.5,  0.5],[ 0.5, -0.5],[ 1.0,  0.0]]
-k = [0,0,0,1,2,2,2]
-w = [1,1,1,1,1]
+p = [[50,50],[100,50],[150,50],[150,100],[150,150],[100,150]]
+k = [0,1,2,3,4,5,6,7,8] #len(k) = len(p) + d + 1
+w = [1,1,1,1,1,1] # len(w) = len(p)
 d = 2
 t = 0
-
+"""
 for i in range(0,100,1):
     print(Interpolate(i/100,d,p,k,w))
+"""
