@@ -1,4 +1,5 @@
 from bspline import*
+from AStar import*
 from grid import*
 import pygame
 import sys
@@ -13,6 +14,7 @@ pygame.display.set_caption('Hello World!')
 def DrawPoints(points):
     color = (255,0,0)
     for i in range(0,len(points)):
+        print(points[i])
         pygame.draw.circle(DISPLAYSURF,color,points[i],5,0)
 def DrawPath(points):
     for i in range(0,100):
@@ -20,31 +22,22 @@ def DrawPath(points):
         temp = [int(ponto[0]),int(ponto[1])]
         pygame.draw.circle(DISPLAYSURF,(0,255,0),temp,2,0)
 
-#ZONA DE TESTES
-wi = [[1 for i in range(10)] for j in range(10)]
-g = SquareGrid(10,10,wi)
-start = (1,1)
-goal = (7,8)
-r = a_star_search(g,start,goal)
-k = [1,1,1,2,3,4,5,6,7,8,9,10,11,12,12,12] #len(k) = len(p) + d + 1
-w = [1,1,1,1,1,1,1,1,1,1,1,1,1] # len(w) = len(p)
-d = 2
-t = 0
-v = [[0 for x in range(0,2)] for y in range(0,13)]
-for i in range(0,10):
-    for j in range(0,2):
-        v[i][j] = r[i][j]*50
-        
 #NAO MEXE
+
 DISPLAYSURF.fill((255,255,255))
-DrawPath(v)
-DrawPoints(v)
+gr = Grid(10,10)
+
+print(gr.Neighbours((0,0)))
 
 #MAIN LOOP
 while True:
-    for event in pygame.event.get():
+    ev = pygame.event.get()
+    for event in ev:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+    gr.InputHandler(ev)
+    gr.DrawGrid(DISPLAYSURF)
     pygame.display.update()
+    DISPLAYSURF.fill((255,255,255))
 

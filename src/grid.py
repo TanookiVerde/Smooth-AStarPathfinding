@@ -1,68 +1,63 @@
-import heapq
+import pygame
+from pygame.locals import*
 
-class SquareGrid:
-    def __init__(self, width, height,weights):
-        self.width = width
-        self.height = height
-        self.walls = []
-        self.weights = {}
-    def in_bounds(self, id):
+PATH_COLOR = (0,150,150)
+WALL_COLOR = (150,0,0)
+
+class Grid:
+    def __init__(self,lines,columns):
+        self.l = lines
+        self.c = columns
+        self.tiles = {}
+        self.obstacles = []
+        for i in range(0,self.l):
+            for j in range(0,self.c):
+                self.tiles[(i,j)] = Node(i,j,50,False)
+    def DrawGrid(self,surf):
+        for next in self.tiles:
+            self.tiles[next].DrawNode(surf)
+        return
+    def InputHandler(self,ev):
+        for event in ev:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                id = (pos[0]/50,pos[1]/50)
+                self.tiles[id].OnClick(self)
+    def IsNotWall(self,id):
+        return self.tiles[id].obstacle == False
+    def IsWall(self,id):
+        return self.tiles[id].obstacle == True
+    def InBounds(self,id):
+        (x,y) = id
+        #l->y e c->x mesmo? acho que pode estar errado
+        return 0 <= x < self.c and 0 <= y < self.l
+    def Neighbours(self,id):
         (x, y) = id
-        return 0 <= x < self.width and 0 <= y < self.height
-    def passable(self, id):
-        return id not in self.walls
-    def neighbors(self, id):
-        (x, y) = id
-        results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)]
-        if (x + y) % 2 == 0: results.reverse() # aesthetics
-        results = filter(self.in_bounds, results)
-        results = filter(self.passable, results)
+        results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1),(x+1,y+1),(x-1,y-1),(x-1,y+1),(x+1,y-1)]
+        results = filter(self.InBounds, results)
+        results = filter(self.IsNotWall, results)
         return results
-    def cost(self, from_node, to_node):
-        return self.weights.get(to_node, 1)
-class PriorityQueue:
-    def __init__(self):
-        self.elements = []
-    def empty(self):
-        return len(self.elements) == 0
-    def put(self, item, priority):
-        heapq.heappush(self.elements, (priority, item))
-    def get(self):
-        return heapq.heappop(self.elements)[1]
-def heuristic(a, b):
-    (x1, y1) = a
-    (x2, y2) = b
-    return abs(x1 - x2) + abs(y1 - y2)
-def a_star_search(graph, start, goal):
-    frontier = PriorityQueue()
-    frontier.put(start, 0)
-    came_from = {}
-    cost_so_far = {}
-    came_from[start] = None
-    cost_so_far[start] = 0
-    while not frontier.empty():
-        current = frontier.get()
-        if current == goal:
-            break
-        for next in graph.neighbors(current):
-            new_cost = cost_so_far[current] + graph.cost(current, next)
-            if next not in cost_so_far or new_cost < cost_so_far[next]:
-                cost_so_far[next] = new_cost
-                priority = new_cost + heuristic(goal, next)
-                frontier.put(next, priority)
-                came_from[next] = current
-    m = goal
-    result = []
-    while m != start:
-        m = came_from[m]
-        result.append(m)
-    return result
+    def Cost(self,fromN,toN):
+        return 1
+    def GetObstacles(self):
+        r = filter(self.IsWall,self.tiles)
+        self.obstacles = r
+        return r
 
-#ZONA DE TESTES
-"""
-w = [[1 for i in range(10)] for j in range(10)]
-g = SquareGrid(10,10,w)
-start = (1,1)
-goal = (7,8)
-r = a_star_search(g,start,goal)
-"""
+class Node:
+    def __init__(self,i,j,size,obstacle):
+        self.pos = (i,j)
+        self.size = size #float
+        self.obstacle = obstacle #Bool
+
+    def DrawNode(self,surf):
+        box = Rect(self.pos[0]*self.size,self.pos[1]*self.size,self.size,self.size)
+        if self.obstacle == True:
+            pygame.draw.rect(surf,WALL_COLOR,box,0)
+        else:
+            pygame.draw.rect(surf,(255,255,255),box,0)
+            pygame.draw.rect(surf,PATH_COLOR,box,2)
+        return
+
+    def OnClick(self,grid):
+        self.obstacle = not self.obstacle
