@@ -1,33 +1,24 @@
-from bspline import*
+from BSpline import*
 from AStar import*
-from grid import*
+from Grid import*
+
 import pygame
-import sys
 from pygame.locals import*
+import sys
 
 S_WIDTH,S_HEIGHT = 500,500
 pygame.init()
 
 DISPLAYSURF = pygame.display.set_mode((S_WIDTH, S_HEIGHT))
 pygame.display.set_caption('Hello World!')
-
-def DrawPoints(points):
-    color = (255,0,0)
-    for i in range(0,len(points)):
-        print(points[i])
-        pygame.draw.circle(DISPLAYSURF,color,points[i],5,0)
-def DrawPath(points):
-    for i in range(0,100):
-        ponto = Interpolate(i/100.0,d,points,k,w) 
-        temp = [int(ponto[0]),int(ponto[1])]
-        pygame.draw.circle(DISPLAYSURF,(0,255,0),temp,2,0)
-
-#NAO MEXE
-
+      
+#GLOBAL || NAO MUDAR
 DISPLAYSURF.fill((255,255,255))
 gr = Grid(10,10)
-
-print(gr.Neighbours((0,0)))
+start = (0,0)
+goal = (9,9)
+d = 2
+r = []
 
 #MAIN LOOP
 while True:
@@ -36,8 +27,16 @@ while True:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == KEYDOWN:
+            if event.key == K_SPACE:
+                gr.GetObstacles()
+                r = a_star_search(gr,start,goal)
     gr.InputHandler(ev)
     gr.DrawGrid(DISPLAYSURF)
+    if len(r) > 3:
+        bs = BSpline(d,r)
+        bs.DrawPoints(DISPLAYSURF)
+        bs.DrawPath(DISPLAYSURF)
     pygame.display.update()
     DISPLAYSURF.fill((255,255,255))
 

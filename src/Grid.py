@@ -31,7 +31,7 @@ class Grid:
         (x,y) = id
         #l->y e c->x mesmo? acho que pode estar errado
         return 0 <= x < self.c and 0 <= y < self.l
-    def Neighbours(self,id):
+    def Neighbors(self,id):
         (x, y) = id
         results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1),(x+1,y+1),(x-1,y-1),(x-1,y+1),(x+1,y-1)]
         results = filter(self.InBounds, results)
