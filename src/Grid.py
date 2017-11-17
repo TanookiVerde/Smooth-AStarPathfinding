@@ -31,7 +31,6 @@ class Grid:
         return self.tiles[id].obstacle == True
     def InBounds(self,id):
         (x,y) = id
-        #l->y e c->x mesmo? acho que pode estar errado
         return 0 <= x < self.c and 0 <= y < self.l
     def Neighbors(self,id):
         (x, y) = id
@@ -49,8 +48,8 @@ class Grid:
 class Node:
     def __init__(self,i,j,size,obstacle):
         self.pos = (i,j)
-        self.size = size #float
-        self.obstacle = obstacle #Bool
+        self.size = size
+        self.obstacle = obstacle
     def DrawNode(self,surf):
         box = Rect(self.pos[0]*self.size,self.pos[1]*self.size,self.size,self.size)
         if self.obstacle == True:

@@ -12,10 +12,10 @@ class BSpline:
         self.Prepare()
     def Prepare(self):
         self.knots = [1 for i in range(0,len(self.controlPoints) + self.degree + 1)]
-        for i in range(0,3):
+        for i in range(0,2):
             self.knots[i] = 1
-        for i in range(3,len(self.knots)-3):
-            self.knots[i] = i-2
+        for i in range(2,len(self.knots)-3):
+            self.knots[i] = i-1
         for i in range(len(self.knots)-3,len(self.knots)):
             self.knots[i] = len(self.knots)-4
         self.weights = [1 for i in range(0,len(self.controlPoints))]
@@ -47,23 +47,23 @@ class BSpline:
         result = [0 for x in range(0,dim+1)]
         for j in range(0,dim):
             result[j] = v[s][j]/v[s][dim]
-        print(result)
         return result
     def DrawPoints(self,surf):
         if len(self.controlPoints) == 0:
             return
         for i in range(0,len(self.controlPoints)):
-            pygame.draw.circle(surf,self.controlPointColor,self.controlPoints[i],5,0)
+            temp = self.controlPoints[i]
+            temp = (temp[0]+25,temp[1]+25)
+            pygame.draw.circle(surf,self.controlPointColor,temp,5,0)
     def DrawPath(self,surf):
         if len(self.controlPoints) == 0:
             return
-        for i in range(1,200):
-            ponto = self.Interpolate(i/200.0) 
-            temp = [int(ponto[0]),int(ponto[1])]
+        for i in range(1,300):
+            ponto = self.Interpolate(i/300.0) 
+            temp = [int(ponto[0])+25,int(ponto[1])+25]
             pygame.draw.circle(surf,self.splineColor,temp,5,0)
     def ConvertToGlobalPoints(self,points):
         p = []
         for next in points:
             p.append((next[0]*50,next[1]*50))
-        print(p)
         return p

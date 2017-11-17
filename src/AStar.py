@@ -36,4 +36,5 @@ def a_star_search(graph, start, goal):
     while m != start:
         result.append(m)
         m = came_from[m]
+    result.append(start)
     return result

@@ -14,7 +14,7 @@ pygame.display.set_caption("A* Pathfinding Smoothed")
 #GLOBAL || NAO MUDAR
 mySurface.fill((255,255,255))
 gr = Grid(10,10)
-start = (1,1)
+start = (0,0)
 goal = (9,9)
 d = 2
 r = []
@@ -34,8 +34,8 @@ while True:
     gr.DrawGrid(mySurface)
     if len(r) > 3:
         bs = BSpline(d,r)
-        bs.DrawPoints(mySurface)
         bs.DrawPath(mySurface)
+        bs.DrawPoints(mySurface)
     pygame.display.update()
     mySurface.fill((255,255,255))
 
