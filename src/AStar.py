@@ -37,12 +37,3 @@ def a_star_search(graph, start, goal):
         result.append(m)
         m = came_from[m]
     return result
-
-#ZONA DE TESTES
-"""
-w = [[1 for i in range(10)] for j in range(10)]
-g = SquareGrid(10,10,w)
-start = (1,1)
-goal = (7,8)
-r = a_star_search(g,start,goal)
-"""

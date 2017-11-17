@@ -60,21 +60,10 @@ class BSpline:
         for i in range(1,200):
             ponto = self.Interpolate(i/200.0) 
             temp = [int(ponto[0]),int(ponto[1])]
-            pygame.draw.circle(surf,self.splineColor,temp,2,0)
+            pygame.draw.circle(surf,self.splineColor,temp,5,0)
     def ConvertToGlobalPoints(self,points):
         p = []
         for next in points:
             p.append((next[0]*50,next[1]*50))
         print(p)
         return p
-
-"""
-p = [[50,50],[100,50],[150,100],[150,150],[100,150],[50,100]]
-k = [1,1,1,2,3,4,5,5,5] #len(k) = len(p) + d + 1
-w = [1,1,1,1,1,1] # len(w) = len(p)
-d = 2
-t = 0
-
-for i in range(0,100,1):
-    print(Interpolate(i/100,d,p,k,w))
-"""

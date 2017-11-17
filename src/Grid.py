@@ -4,6 +4,8 @@ from pygame.locals import*
 PATH_COLOR = (0,150,150)
 WALL_COLOR = (150,0,0)
 
+CELL_SIZE = 50
+
 class Grid:
     def __init__(self,lines,columns):
         self.l = lines
@@ -12,7 +14,7 @@ class Grid:
         self.obstacles = []
         for i in range(0,self.l):
             for j in range(0,self.c):
-                self.tiles[(i,j)] = Node(i,j,50,False)
+                self.tiles[(i,j)] = Node(i,j,CELL_SIZE,False)
     def DrawGrid(self,surf):
         for next in self.tiles:
             self.tiles[next].DrawNode(surf)
@@ -21,7 +23,7 @@ class Grid:
         for event in ev:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                id = (pos[0]/50,pos[1]/50)
+                id = (pos[0]/CELL_SIZE,pos[1]/CELL_SIZE)
                 self.tiles[id].OnClick(self)
     def IsNotWall(self,id):
         return self.tiles[id].obstacle == False
@@ -33,7 +35,7 @@ class Grid:
         return 0 <= x < self.c and 0 <= y < self.l
     def Neighbors(self,id):
         (x, y) = id
-        results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1),(x+1,y+1),(x-1,y-1),(x-1,y+1),(x+1,y-1)]
+        results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)]
         results = filter(self.InBounds, results)
         results = filter(self.IsNotWall, results)
         return results
@@ -49,7 +51,6 @@ class Node:
         self.pos = (i,j)
         self.size = size #float
         self.obstacle = obstacle #Bool
-
     def DrawNode(self,surf):
         box = Rect(self.pos[0]*self.size,self.pos[1]*self.size,self.size,self.size)
         if self.obstacle == True:
@@ -58,6 +59,5 @@ class Node:
             pygame.draw.rect(surf,(255,255,255),box,0)
             pygame.draw.rect(surf,PATH_COLOR,box,2)
         return
-
     def OnClick(self,grid):
         self.obstacle = not self.obstacle
