@@ -157,4 +157,93 @@ Tendo isso em mente, poderia ser aplicado no problema diretamente usando os pont
 
 **Interpolando usando B-Splines**
 
+_Definição_
 
+Um dos problemas que foi notado na curva Bézier é que todos os pontos influenciavam na forma do curva, quando na verdade seria muito mais interessante definir que apenas k-1 pontos próximos tivessem controle. Na curva B-Spline esta é justamente uma das propriedades: a possibilidade de definir quantos pontos podem influenciar na curvatura e como eles interferem. Portanto muito mais liberdade.
+
+Uma curva B-Spline S(x) é  definida de forma que: 
+* k é o grau da curva.
+* n é o número de pontos de controle.
+* [p0,p1,...,pn-1] é o conjunto de pontos de controle.
+* [t0,t1,...,tk+n] é o conjunto de valores de nó no qual os valores de t sempre crescem ou permanecem iguais em relação à sua ordem no vetor.
+* S(x) é definida como a função:
+
+**IMG**
+
+Na qual 
+
+**IMG**
+
+é uma função recursiva denominada função base que é determinada da seguinte maneira:
+
+**IMG**
+
+O conjunto de valores de nó (em inglês knot values) têm uma grande importância no formato da curva. Mais especificamente, mudar os valores dos nós dita o quanto cada ponto influencia na curvatura total. Se definirmos que os valores de nó tem um intervalo igual entre cada, exemplo [1,2,3,4,...], significa que cada ponto de controle tem uma influência igual na curvatura. É possível modificar o vetor de muitas maneira, desde que a regra 
+
+**IMG**
+
+seja seguida. Por exemplo: [1,1,2,3,...].
+
+Ao usar uma distribuição uniforme de valores de nó (espaçamento igual) ocorre um efeito não desejado: a curva não encosta no ponto inicial nem no final, apenas passa perto deles. Para resolver isso iremos aumentar a multiplicidade dos k+1 primeiros e  k+1 últimos valores de nó. Aumentar a multiplicidade quer dizer repetir os valores. Exemplo: [1,1,1,2,3,4,5,5,5].
+
+_Algoritmo de De Boor_
+
+A parte delicada no cálculo de uma B-Spline é justamente seu caráter recursivo. Computacionalmente a complexidade do algoritmo se expande muito rapidamente. Para resolver este problema, a técnica de memorização é utilizada no algoritmo de De Boor.
+
+O algoritmo calcula a base da pirâmide de recursividade (Valores próximos ao critério de parada) primeiro e os armazena no vetor V. Dessa maneira nenhum valor precisa ser calculado novamente:
+
+´´´
+função DeBoor(x):
+	V[n][0] = P[n], para todo n possível
+	#Definindo o intervalo:
+	Se x esta no intervalo [t[k],t[k+1]) e x != t[k]:
+		h = p
+		s = 0
+	Se x = t[k] onde s é a multiplicidade do valor t[k]:
+		h = p-s
+		s = s
+	#Calculo propriamente dito:   
+	Para r de 1 até h:
+		Para i de k-p+r até k-s:
+			Alpha = (x-t[i])/(t[i+p-r+1]-t[i])
+			V[i][r] = (1-alpha)*V[i-1][r-1]+alpha*V[i][r-1]
+	Retorna V[k-s][p-s]
+
+´´´
+
+## Resultados
+
+Tendo em vista o formato de nosso grafo e o controle necessário na hora de montar uma curva, o método mais indicado para interpolar é o da curva B-Spline. Graças ao seu vetor de nós foi possível controlar a influência local dos pontos de maneira que os muito distantes não interfiram em toda a curva.
+
+O grau escolhido para a curva B-Spline foi dois, pois não são necessários mais que três pontos para influências a função em uma curva. Como pontos de controle da curva, foi dada a saída do algoritmo A* tratado (multiplicado pelo tamanho da célula da tabela). Como valores de nós (knot values) foi utilizado um padrão uniforme, porém com as extremidades repetidas, [1,1,1,2,...,n-1,n,n,n], com isso a curva encostava no ponto inicial e final.
+
+Com essas configurações o resultado pode ser visto abaixo ou através deste [Repositório](https://github.com/TanookiVerde/Smooth-AStarPathfinding).
+
+**IMG**
+
+O ponto inicial e o final são sempre a diagonal esquerda-superior e direita inferior, respectivamente. O usuário pode desenhar ou apagar obstáculos clicando no quadrado com a posição desejada. Ao pressionar a tecla Espaço o programa atualiza (ou começa) o processo e desenha o caminho.
+
+## Discussão e conclusões
+
+A interpolação acabou sendo um problema cuja solução deveria ser muito mais sutil que o esperado. Na hora de calcular uma função para reproduzir um movimento, foi necessário ter extremo cuidado com sua forma. Por conta disso é essencial utilizar um método de interpolação que lhe dê possibilidade de controlar melhor como os pontos irão interagir com a curva.
+
+Através dos estudos nas seções acima, foi possível perceber que para movimentação em um cenário a interpolação usando Curvas B-Spline é recomendada, muito pela forma como ela permite que o desenvolvedor controle melhor características do movimento, além de que durante a curva, com exceção das extremidades, é mantida uma suavidade até a segunda derivada.
+
+As observações feitas durante o estudo foram documentadas da forma mais dinâmica possível na tabela abaixo:
+
+Métodos | Pontos positivos | Pontos negativos
+------------ | ------------- | -------------
+Piecewise | Conceitualmente simples | É preciso rotacionar os eixos; Seria necessário calcular diversas funções separadas; Precisaria aumentar o grau do polinômio para igualar as segundas derivadas.
+Bézier | Implementação Simples; Não precisa rotacionar | Para existir controle local de curvatura seria necessário calcular a curva para cada três pontos
+B-Spline | Uma função controla tudo; É possível definir controle local de curvatura; Contínua até a segunda derivada, com exceção das extremidades | Complexa de implementar
+
+## Referências
+
+# Pathfinding
+* https://www.redblobgames.com/pathfinding/a-star/introduction.html
+* https://www.redblobgames.com/pathfinding/a-star/implementation.html
+
+# Interpolação
+* http://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/notes.html
+* https://pomax.github.io/bezierinfo/
+* https://tiborstanko.sk/teaching/geo-num-2016/tp3.html
