@@ -121,3 +121,40 @@ Outro ponto negativo é que se o grafo utilizado não fosse de um formato “com
 
 Uma maneira de resolver estes problemas seria rotacionar os eixos para todo polinômio a ser calculado. Porém a complexidade do problema aumenta e deixa este método menos interessante. 
 
+**Interpolando usando Curvas Bézier**
+
+_Definiçao e exemplos_
+
+Curvas Bézier nada mais são que uma função que interpola linearmente pontos em função de um parâmetro t, que é entre 0 e 1. A forma como a curva se comporta é definida usando pontos de controle, que são os pontos intermediários entre o início e o fim da curva. Para t = 0 estamos no ponto inicial, t = 1 estamos no ponto final e t = 0.5 estamos na metade do caminho.
+
+Por conta do uso de t como parâmetro, a curva não é definida em função de um valor ligado ao eixo, portanto não precisa ser feita nenhuma rotação.
+
+Imaginando que temos três pontos, p1,p2,p3 , definimos p1 como inicial, p3 como ponto final e p2 como ponto de controle. Inicialmente o caminho sem interpolação seria ir do ponto p1 ao p2 e do p2 ao p3, ou seja, duas retas. Para um exemplo simples, um ponto da curva Bézier pode ser definido usando estas retas da seguinte maneira:
+
+Se andarmos 25% da reta p1p2, andamos 25% da reta p2p3. Assim obtemos dois pontos, c1, c2, um em cada reta e ambos 25% de distância do ponto de origem. 
+
+Traçando uma reta c1c2 entre esses dois pontos e também traçamos um ponto em 25% dela obtemos um ponto que pertence a curva Bézier de maneira que bezier(0.25) = d1.
+
+**IMG**
+
+Um passo a passo geral para desenhar um ponto seria: trace retas entre os pontos, ande n% em todas as retas formando novos pontos. Ligue estes pontos e repita o processo de andar n% até chegar em apenas um ponto. Ele pertence a curva.
+
+**IMG**
+
+_Função Bézier_
+
+A função que descreve a curva completa com **n-1** pontos é da forma:
+
+**IMG**
+
+onde é um ponto de controle.
+
+Tendo isso em mente, poderia ser aplicado no problema diretamente usando os pontos dados pelo algoritmo de pathfinding com a ressalva que:
+* A  curva não encosta nos pontos de controle, portanto não é recomendado que se use todos os pontos para criar uma única curva, mas sim um conjunto de curvas com três pontos cada.
+* Dependendo da quantidade de pontos para definir uma curva a função pode começar a ficar cara em termos de complexidade, pois a combinação de n, i a i é calculada usando fatorial.
+
+**IMG**
+
+**Interpolando usando B-Splines**
+
+
