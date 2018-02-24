@@ -139,21 +139,21 @@ Traçando uma reta c1c2 entre esses dois pontos e também traçamos um ponto em 
 
 Um passo a passo geral para desenhar um ponto seria: trace retas entre os pontos, ande n% em todas as retas formando novos pontos. Ligue estes pontos e repita o processo de andar n% até chegar em apenas um ponto. Ele pertence a curva.
 
-**IMG**
+![](https://i.imgur.com/qyyQJB7.png)
 
 _Função Bézier_
 
 A função que descreve a curva completa com **n-1** pontos é da forma:
 
-**IMG**
+![](https://i.imgur.com/uRZpcIr.png)
 
-onde é um ponto de controle.
+onde pi é um ponto de controle.
 
 Tendo isso em mente, poderia ser aplicado no problema diretamente usando os pontos dados pelo algoritmo de pathfinding com a ressalva que:
 * A  curva não encosta nos pontos de controle, portanto não é recomendado que se use todos os pontos para criar uma única curva, mas sim um conjunto de curvas com três pontos cada.
 * Dependendo da quantidade de pontos para definir uma curva a função pode começar a ficar cara em termos de complexidade, pois a combinação de n, i a i é calculada usando fatorial.
 
-**IMG**
+![](https://i.imgur.com/lCuYexS.png)
 
 **Interpolando usando B-Splines**
 
@@ -168,15 +168,15 @@ Uma curva B-Spline S(x) é  definida de forma que:
 * [t0,t1,...,tk+n] é o conjunto de valores de nó no qual os valores de t sempre crescem ou permanecem iguais em relação à sua ordem no vetor.
 * S(x) é definida como a função:
 
-**IMG**
+![](https://i.imgur.com/1kLrkco.png)
 
 Na qual 
 
-**IMG**
+![](https://i.imgur.com/rOtobc9.png)
 
 é uma função recursiva denominada função base que é determinada da seguinte maneira:
 
-**IMG**
+![](https://i.imgur.com/1kLrkco.png)
 
 O conjunto de valores de nó (em inglês knot values) têm uma grande importância no formato da curva. Mais especificamente, mudar os valores dos nós dita o quanto cada ponto influencia na curvatura total. Se definirmos que os valores de nó tem um intervalo igual entre cada, exemplo [1,2,3,4,...], significa que cada ponto de controle tem uma influência igual na curvatura. É possível modificar o vetor de muitas maneira, desde que a regra 
 
@@ -219,7 +219,7 @@ O grau escolhido para a curva B-Spline foi dois, pois não são necessários mai
 
 Com essas configurações o resultado pode ser visto abaixo ou através deste [Repositório](https://github.com/TanookiVerde/Smooth-AStarPathfinding).
 
-**IMG**
+![Imagem](https://i.imgur.com/YAsDawn.png)
 
 O ponto inicial e o final são sempre a diagonal esquerda-superior e direita inferior, respectivamente. O usuário pode desenhar ou apagar obstáculos clicando no quadrado com a posição desejada. Ao pressionar a tecla Espaço o programa atualiza (ou começa) o processo e desenha o caminho.
 
